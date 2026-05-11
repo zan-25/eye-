@@ -371,7 +371,8 @@ class SurgicalWorkstation(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Centration Surgical Assist - Workstation v3.0")
-        self.setMinimumSize(1440, 900)
+        self.setMinimumSize(1200, 700)
+        self.resize(1280, 768)
         self.setStyleSheet(f"""
             QMainWindow, QWidget {{
                 background-color: {BG_APP};
@@ -817,5 +818,5 @@ class SurgicalWorkstation(QMainWindow):
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     window = SurgicalWorkstation()
-    window.show()
+    window.showMaximized()
     sys.exit(app.exec())
