@@ -203,7 +203,7 @@ class ScanWidget(QWidget):
             for i in range(10):
                 painter.drawLine(0, i * h / 10, w, i * h / 10)
                 painter.drawLine(i * w / 10, 0, i * w / 10, h)
-            painter.setPen(QPen(QColor(ACCENT_GREEN, 50), 1))
+            painter.setPen(QPen(QColor(0, 255, 136, 50), 1))
             painter.drawEllipse(w/2 - 50, h/2 - 50, 100, 100)
 
 class ActionGroup(QFrame):
@@ -290,7 +290,7 @@ class EyeGraphicsView(QGraphicsView):
             rect.setZValue(10)
             
         # Iris Detection Ring (Blue dashed)
-        iris_pen = QPen(QColor(ACCENT_BLUE, 100), 0.8, Qt.PenStyle.DashLine)
+        iris_pen = QPen(QColor(0, 194, 255, 100), 0.8, Qt.PenStyle.DashLine)
         self.scene().addEllipse(-140, -140, 280, 280, iris_pen)
         
         # Pupil Ring (Green)
@@ -298,7 +298,7 @@ class EyeGraphicsView(QGraphicsView):
         self.scene().addEllipse(-75, -75, 150, 150, pupil_pen)
         
         # Center Marker
-        self.scene().addEllipse(-4, -4, 8, 8, QPen(Qt.GlobalColor.transparent), QColor(ACCENT_GREEN, 180))
+        self.scene().addEllipse(-4, -4, 8, 8, QPen(Qt.GlobalColor.transparent), QColor(0, 255, 136, 180))
         
         # Offset Text
         offset_val = QLabel("0.30 mm")
