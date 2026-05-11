@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Centration Surgical Assist</title>
+    <script src="qwebchannel.js"></script>
+    <script>
+      // Desktop Integration Bridge
+      window.desktopReady = new Promise((resolve) => {
+        if (typeof QWebChannel !== 'undefined' && typeof qt !== 'undefined' && qt.webChannelTransport) {
+          new QWebChannel(qt.webChannelTransport, function(channel) {
+            window.pyBridge = channel.objects.pyBridge;
+            console.log('Desktop Bridge Connected');
+            resolve(window.pyBridge);
+          });
+        } else {
+          console.log('Running in Web Mode');
+          resolve(null);
+        }
+      });
+      
+      // Original shims...
+      (function() {
+        // 1. window.fetch shim: allow reassignment even if it starts as a read-only getter
+        try {
+          var originalFetch = window.fetch;
+          var currentFetch = originalFetch;
+          Object.defineProperty(window, 'fetch', {
+            get: function() { return currentFetch; },
+            set: function(v) { 
+              console.warn('Environment Warning: window.fetch being overridden.');
+              currentFetch = v; 
+            },
+            configurable: true,
+            enumerable: true
+          });
+        } catch (e) {
+          // If defineProperty fails, fetch might be non-configurable.
+          // We can't do much about the TypeError then, but we try to log why.
+          console.error('Centration Boot: Could not shim fetch (likely non-configurable):', e);
+        }
+
+        // 2. JSON.parse shim: protect against "undefined" or malformed strings
+        // that often come from uninitialized localStorage or env vars in some environments.
+        try {
+          var originalJSONParse = JSON.parse;
+          JSON.parse = function(text, reviver) {
+            if (text === "undefined" || text === undefined) {
+              console.warn('Centration Boot: Blocked JSON.parse(undefined). Returning null.');
+              return null;
+            }
+            return originalJSONParse.apply(JSON, arguments);
+          };
+        } catch (e) {
+          console.error('Centration Boot: Could not shim JSON.parse:', e);
+        }
+
+        // 3. process shim: many common libraries expect process.env to exist
+        window.process = window.process || { env: {} };
+        window.global = window.global || window;
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
+

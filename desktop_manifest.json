@@ -1,0 +1,10 @@
+{
+  "name": "centration-workstation",
+  "version": "1.0.0",
+  "description": "Professional Surgical Assistance Desktop Environment",
+  "main": "main_qt.py",
+  "scripts": {
+    "desktop:dev": "python main_qt.py",
+    "desktop:build": "pyinstaller --name CentrationWorkstation --windowed --add-data 'dist:dist' --icon=public/favicon.ico main_qt.py"
+  }
+}

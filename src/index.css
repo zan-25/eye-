@@ -1,0 +1,68 @@
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Outfit:wght@300;400;600;900&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Outfit", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+  
+  --color-medical-bg: #020304;
+  --color-medical-card: #0a0c0f;
+  --color-accent-green: #00ff88;
+  --color-accent-blue: #00c2ff;
+  --color-accent-red: #ff3e3e;
+  
+  --color-text-primary: #F5F5F5;
+  --color-text-secondary: #8A8F98;
+}
+
+@layer base {
+  body {
+    @apply bg-medical-bg text-text-primary overflow-hidden font-sans antialiased;
+  }
+}
+
+@layer components {
+  .glass-panel {
+    @apply bg-medical-card/80 backdrop-blur-md border border-white/5;
+  }
+  
+  .label-tech {
+    @apply text-[9px] font-black tracking-widest text-white/30 uppercase font-mono leading-none;
+  }
+  
+  .value-tech {
+    @apply text-[14px] font-bold text-white font-mono leading-tight;
+  }
+  
+  .scrub-text {
+    @apply text-[10px] text-white/40 font-medium;
+  }
+}
+
+@keyframes pulse-medical {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 1; }
+}
+
+.animate-pulse-medical {
+  animation: pulse-medical 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Custom scrollbar for dark UI */
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
