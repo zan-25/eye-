@@ -327,7 +327,7 @@ class DotBar(QWidget):
             painter.drawEllipse(x, 4, dot_size, dot_size)
 
 class MetricRow(QWidget):
-    def __init__(self, label, value, unit="", color=None, parent=None):
+    def __init__(self, label, value, unit="", color=None, parent=None, second_val=None, second_color=None, draw_pencil=False):
         super().__init__(parent)
         layout = QHBoxLayout(self)
         layout.setContentsMargins(0, 5, 0, 5)
@@ -337,15 +337,35 @@ class MetricRow(QWidget):
         layout.addWidget(lbl)
         layout.addStretch()
         
+        # Value container
+        val_container = QWidget()
+        v_layout = QHBoxLayout(val_container)
+        v_layout.setContentsMargins(0,0,0,0)
+        v_layout.setSpacing(4)
+        
         val = QLabel(str(value))
         val_color = color if color else "white"
         val.setStyleSheet(f"color: {val_color}; font-weight: 700; font-family: 'JetBrains Mono', monospace; font-size: 12px;")
-        layout.addWidget(val)
+        v_layout.addWidget(val)
         
+        if second_val:
+            sv = QLabel(str(second_val))
+            sv_color = second_color if second_color else "white"
+            sv.setStyleSheet(f"color: {sv_color}; font-weight: 700; font-family: 'JetBrains Mono', monospace; font-size: 12px;")
+            v_layout.addWidget(sv)
+            
         if unit:
             u = QLabel(unit)
-            u.setStyleSheet(f"color: {color if color else TEXT_DIM}; font-size: 9px; min-width: 15px;")
-            layout.addWidget(u)
+            u_color = color if color == ACCENT_YELLOW else (second_color if second_color == ACCENT_BLUE else TEXT_DIM)
+            u.setStyleSheet(f"color: {u_color}; font-size: 9px; min-width: 15px;")
+            v_layout.addWidget(u)
+
+        if draw_pencil:
+            p = QLabel("✎")
+            p.setStyleSheet(f"color: {TEXT_DIM}; font-size: 10px;")
+            v_layout.addWidget(p)
+            
+        layout.addWidget(val_container)
 
 class SurgicalWorkstation(QMainWindow):
     def __init__(self):
@@ -465,10 +485,11 @@ class SurgicalWorkstation(QMainWindow):
         logo_layout = QHBoxLayout()
         logo_layout.setSpacing(12)
         logo_icon = QLabel("⊕")
-        logo_icon.setStyleSheet(f"color: {ACCENT_GREEN}; font-size: 28px;")
+        logo_icon.setStyleSheet(f"color: {ACCENT_GREEN}; font-size: 32px;")
         logo_text = QVBoxLayout()
+        logo_text.setSpacing(0)
         lt1 = QLabel("CENTRATION")
-        lt1.setStyleSheet("color: white; font-weight: 950; font-size: 12px; letter-spacing: 1.5px;")
+        lt1.setStyleSheet("color: white; font-weight: 950; font-size: 13px; letter-spacing: 2px;")
         lt2 = QLabel("SURGICAL ASSIST")
         lt2.setStyleSheet(f"color: {TEXT_DIM}; font-weight: 900; font-size: 9px;")
         logo_text.addWidget(lt1)
@@ -476,7 +497,7 @@ class SurgicalWorkstation(QMainWindow):
         logo_layout.addWidget(logo_icon)
         logo_layout.addLayout(logo_text)
         h_layout.addLayout(logo_layout)
-        h_layout.addSpacing(30)
+        h_layout.addSpacing(40)
         
         v_line = QFrame()
         v_line.setFixedWidth(1)
@@ -513,11 +534,11 @@ class SurgicalWorkstation(QMainWindow):
         """)
         cb_layout = QHBoxLayout(self.ctrl_btn)
         cb_layout.setContentsMargins(10, 0, 10, 0)
-        cb_layout.setSpacing(5)
+        cb_layout.setSpacing(8)
         cb_icon = QLabel("㗊")
-        cb_icon.setStyleSheet("color: white; font-size: 14px; background: transparent; border: none;")
+        cb_icon.setStyleSheet("color: white; font-size: 16px; background: transparent; border: none;")
         cb_text = QLabel("Controls")
-        cb_text.setStyleSheet("color: white; font-size: 11px; font-weight: 600; background: transparent; border: none;")
+        cb_text.setStyleSheet("color: white; font-size: 11px; font-weight: 700; background: transparent; border: none;")
         cd_sep = QFrame()
         cd_sep.setFixedWidth(1)
         cd_sep.setStyleSheet("background: rgba(255,255,255,0.1); margin: 8px 0; border: none;")
@@ -530,35 +551,37 @@ class SurgicalWorkstation(QMainWindow):
         cb_layout.addWidget(cd_sep)
         cb_layout.addWidget(cb_arrow)
         h_layout.addWidget(self.ctrl_btn)
-        h_layout.addSpacing(25)
+        h_layout.addSpacing(30)
         
         self.ctrl_btn.clicked.connect(self.toggle_controls)
 
         # Eye
         eye_box = QVBoxLayout()
+        eye_box.setSpacing(2)
         eye_label = QLabel("EYE")
-        eye_label.setStyleSheet(f"color: {TEXT_DIM}; font-size: 8px; font-weight: 900;")
+        eye_label.setStyleSheet(f"color: {TEXT_DIM}; font-size: 8px; font-weight: 900; letter-spacing: 0.5px;")
         eye_btns = QHBoxLayout()
         od = QPushButton("OD")
-        od.setFixedSize(32, 24)
-        od.setStyleSheet(f"background: rgba(0, 255, 136, 0.05); border: 1px solid {ACCENT_GREEN}; color: {ACCENT_GREEN}; font-size: 9px; font-weight: 800; border-radius: 2px;")
+        od.setFixedSize(34, 24)
+        od.setStyleSheet(f"background: rgba(0, 255, 136, 0.05); border: 1px solid {ACCENT_GREEN}; color: {ACCENT_GREEN}; font-size: 9px; font-weight: 900; border-radius: 4px;")
         os = QPushButton("OS")
-        os.setFixedSize(32, 24)
-        os.setStyleSheet("background: transparent; border: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.4); font-size: 9px; font-weight: 800; border-radius: 2px;")
+        os.setFixedSize(34, 24)
+        os.setStyleSheet("background: transparent; border: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.4); font-size: 9px; font-weight: 900; border-radius: 4px;")
         eye_btns.addWidget(od)
         eye_btns.addWidget(os)
         eye_box.addWidget(eye_label)
         eye_box.addLayout(eye_btns)
         h_layout.addLayout(eye_box)
-        h_layout.addSpacing(25)
+        h_layout.addSpacing(30)
 
         # Mode
         mode_box = QVBoxLayout()
+        mode_box.setSpacing(2)
         mode_label = QLabel("MODE")
-        mode_label.setStyleSheet(f"color: {TEXT_DIM}; font-size: 8px; font-weight: 900;")
+        mode_label.setStyleSheet(f"color: {TEXT_DIM}; font-size: 8px; font-weight: 900; letter-spacing: 0.5px;")
         self.mode_sel = QPushButton("IR ▾")
-        self.mode_sel.setFixedSize(90, 24)
-        self.mode_sel.setStyleSheet("background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); color: white; font-size: 10px; border-radius: 4px; text-align: left; padding-left: 8px;")
+        self.mode_sel.setFixedSize(80, 24)
+        self.mode_sel.setStyleSheet("background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); color: white; font-size: 10px; font-weight: 600; border-radius: 4px; text-align: left; padding-left: 10px;")
         
         mode_menu = QMenu(self)
         mode_menu.addAction("IR", lambda: self.mode_sel.setText("IR ▾"))
@@ -569,40 +592,60 @@ class SurgicalWorkstation(QMainWindow):
         mode_box.addWidget(mode_label)
         mode_box.addWidget(self.mode_sel)
         h_layout.addLayout(mode_box)
-        h_layout.addSpacing(25)
+        h_layout.addSpacing(30)
 
         # Status
         status_box = QVBoxLayout()
+        status_box.setSpacing(2)
         status_label = QLabel("STATUS")
-        status_label.setStyleSheet(f"color: {TEXT_DIM}; font-size: 8px; font-weight: 900;")
+        status_label.setStyleSheet(f"color: {TEXT_DIM}; font-size: 8px; font-weight: 900; letter-spacing: 0.5px;")
         status_info = QHBoxLayout()
+        status_info.setSpacing(6)
         dot = QLabel("●")
-        dot.setStyleSheet(f"color: {ACCENT_GREEN}; font-size: 12px;")
+        dot.setStyleSheet(f"color: {ACCENT_GREEN}; font-size: 10px;")
         stxt = QLabel("STABLE - READY")
-        stxt.setStyleSheet("color: white; font-weight: 800; font-size: 11px; letter-spacing: 0.5px;")
+        stxt.setStyleSheet("color: white; font-weight: 900; font-size: 11px; letter-spacing: 0.5px;")
         status_info.addWidget(dot)
         status_info.addWidget(stxt)
         status_box.addWidget(status_label)
         status_box.addLayout(status_info)
         h_layout.addLayout(status_box)
-        h_layout.addSpacing(30)
+        h_layout.addSpacing(40)
 
         # Settings
-        set_btn = QFrame()
-        set_btn.setFixedSize(80, 38)
-        set_btn.setStyleSheet("background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); border-radius: 4px;")
-        sl = QHBoxLayout(set_btn)
-        si = QLabel("⚙")
-        si.setStyleSheet("color: white; font-size: 16px;")
-        st = QLabel("Settings")
-        st.setStyleSheet("color: white; font-size: 10px; font-weight: 600;")
-        sl.addWidget(si)
-        sl.addWidget(st)
+        set_btn = QPushButton("⚙ Settings")
+        set_btn.setFixedSize(94, 38)
+        set_btn.setStyleSheet("""
+            QPushButton {
+                background: rgba(255,255,255,0.03);
+                border: 1px solid rgba(255,255,255,0.1);
+                border-radius: 6px;
+                color: white;
+                font-size: 11px;
+                font-weight: 700;
+            }
+            QPushButton:hover {
+                background: rgba(255,255,255,0.06);
+                border: 1px solid rgba(255,255,255,0.2);
+            }
+        """)
         h_layout.addWidget(set_btn)
-        h_layout.addSpacing(10)
+        h_layout.addSpacing(15)
 
-        fs_btn = QLabel("⛶")
-        fs_btn.setStyleSheet(f"color: {TEXT_DIM}; font-size: 18px; padding: 5px;")
+        fs_btn = QPushButton("⛶")
+        fs_btn.setFixedSize(38, 38)
+        fs_btn.setStyleSheet("""
+            QPushButton {
+                background: transparent;
+                border: 1px solid rgba(255,255,255,0.1);
+                border-radius: 6px;
+                color: white;
+                font-size: 18px;
+            }
+            QPushButton:hover {
+                background: rgba(255,255,255,0.05);
+            }
+        """)
         h_layout.addWidget(fs_btn)
 
         layout.addWidget(header)
@@ -706,8 +749,8 @@ class SurgicalWorkstation(QMainWindow):
         h1.addWidget(hide)
         layout.addLayout(h1)
         
-        layout.addWidget(MetricRow("Pupil Center (X, Y)", "124, 98", "px", ACCENT_BLUE))
-        layout.addWidget(MetricRow("Limbus Center (X, Y)", "120, 95", "px", ACCENT_BLUE))
+        layout.addWidget(MetricRow("Pupil Center (X, Y)", "124,", "px", color="white", second_val="98", second_color=ACCENT_BLUE))
+        layout.addWidget(MetricRow("Limbus Center (X, Y)", "120,", "px", color="white", second_val="95", second_color=ACCENT_BLUE))
         layout.addWidget(MetricRow("Pupil Diameter", "3.62", "mm"))
         layout.addWidget(MetricRow("Limbus Diameter", "11.24", "mm"))
         
@@ -726,8 +769,8 @@ class SurgicalWorkstation(QMainWindow):
         layout.addWidget(sep2)
         
         layout.addWidget(MetricRow("Confidence Score", "0.92", "", ACCENT_GREEN))
-        layout.addWidget(MetricRow("HVID (Horizontal)", "11.63", "mm ✎"))
-        layout.addWidget(MetricRow("HVID (Vertical)", "11.58", "mm ✎"))
+        layout.addWidget(MetricRow("HVID (Horizontal)", "11.63", "mm", draw_pencil=True))
+        layout.addWidget(MetricRow("HVID (Vertical)", "11.58", "mm", draw_pencil=True))
         
         layout.addSpacing(25)
         
@@ -744,7 +787,7 @@ class SurgicalWorkstation(QMainWindow):
         s_title = QLabel("Stability Index")
         s_title.setStyleSheet(f"color: {TEXT_DIM}; font-size: 11px;")
         s_val = QLabel("82%")
-        s_val.setStyleSheet(f"color: {ACCENT_GREEN}; font-weight: 800; font-size: 12px;")
+        s_val.setStyleSheet(f"color: {ACCENT_GREEN}; font-weight: bold; font-size: 12px;")
         s_row.addWidget(s_title)
         s_row.addStretch()
         s_row.addWidget(s_val)

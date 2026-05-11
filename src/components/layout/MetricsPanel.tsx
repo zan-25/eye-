@@ -1,101 +1,90 @@
 import React, { useState } from 'react';
-import { ChevronUp, Info, Pencil, Activity, Database, ShieldCheck } from 'lucide-react';
+import { ChevronUp, Info, Pencil } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
 const MetricsPanel: React.FC = () => {
   return (
     <aside className="w-[300px] h-full bg-[#050708]/50 backdrop-blur-xl border-l border-white/5 flex flex-col z-40 overflow-y-auto">
       {/* Parameters Panel */}
-      <Section title="Coordinates & Geometry" defaultOpen={true}>
-        <div className="flex flex-col gap-3">
-          <MetricRow label="Pupil Vector" value="124.0, 98.2" unit="px" color="blue" />
-          <MetricRow label="Limbus Vector" value="120.5, 95.1" unit="px" color="blue" />
-          <MetricRow label="Pupil Dia." value="3.62" unit="MM" />
-          <MetricRow label="Limbus Dia." value="11.24" unit="MM" />
+      <Section title="PARAMETERS" defaultOpen={true} hasHide>
+        <div className="flex flex-col gap-2">
+          <MetricRow label="Pupil Center (X, Y)" value="124," secondValue="98" unit="px" valueColor="white" secondValueColor="blue" />
+          <MetricRow label="Limbus Center (X, Y)" value="120," secondValue="95" unit="px" valueColor="white" secondValueColor="blue" />
+          <MetricRow label="Pupil Diameter" value="3.62" unit="mm" />
+          <MetricRow label="Limbus Diameter" value="11.24" unit="mm" />
           
-          <div className="h-[1px] bg-white/[0.03] my-1" />
+          <div className="h-[1px] bg-white/[0.05] my-2" />
           
-          <MetricRow label="Decentration P vs L" value="0.30" unit="MM" color="yellow" />
-          <MetricRow label="Geometric Offset" value="0.28" unit="MM" />
+          <MetricRow label="Offset - Pupil vs Limbus" value="0.30" unit="mm" valueColor="yellow" unitColor="yellow" />
+          <MetricRow label="Offset - Red Dot vs Pupil" value="0.28" unit="mm" />
+          <MetricRow label="Offset - Red Dot vs Limbus" value="0.31" unit="mm" />
+          
+          <div className="h-[1px] bg-white/[0.05] my-2" />
+
+          <MetricRow label="Confidence Score" value="0.92" valueColor="green" />
+          <MetricRow label="HVID (Horizontal)" value="11.63" unit="mm" hasPencil />
+          <MetricRow label="HVID (Vertical)" value="11.58" unit="mm" hasPencil />
         </div>
       </Section>
 
-      {/* Real-time Telemetry */}
-      <Section title="Motion Telemetry" defaultOpen={true}>
-        <div className="flex flex-col gap-4">
-          <div className="flex justify-between items-center bg-white/[0.02] p-2 rounded">
-            <div className="flex items-center gap-2">
-              <Activity className="w-3 h-3 text-accent-green" />
-              <span className="text-[10px] text-white/40 font-bold uppercase tracking-widest">Stability Index</span>
-            </div>
-            <span className="text-[14px] font-bold text-accent-green font-mono">0.982</span>
-          </div>
+      {/* Stability Metrics */}
+      <Section title="STABILITY METRICS" defaultOpen={true} hasInfo>
+        <div className="flex flex-col gap-3">
+          <MetricRow label="Stability Index" value="82%" valueColor="green" />
           
-          {/* Waveform simulation */}
-          <div className="flex items-end justify-between h-[30px] px-1 gap-[2px]">
-            {Array.from({ length: 30 }).map((_, i) => (
+          {/* Dot bar graph */}
+          <div className="flex items-center gap-[4px] py-1">
+            {Array.from({ length: 24 }).map((_, i) => (
               <div 
                 key={i} 
-                className="w-[4px] bg-accent-green/20 rounded-t" 
-                style={{ height: `${20 + Math.random() * 80}%` }}
+                className={`w-[6px] h-[6px] rounded-full ${i < 15 ? 'bg-[#00FF88]' : 'bg-white/10'}`} 
               />
             ))}
           </div>
           
-          <MetricRow label="Micro-movement" value="0.12" unit="MM/S" />
-          <MetricRow label="Tracking Lock" value="HIGH" color="green" />
+          <MetricRow label="Movement (Last 2s)" value="0.12" unit="mm" />
+          <MetricRow label="Quality Index" value="High" valueColor="green" />
         </div>
       </Section>
 
-      {/* System Infrastructure */}
-      <Section title="System Status" defaultOpen={true}>
+      {/* Image Quality & Latency */}
+      <Section title="IMAGE QUALITY & LATENCY" defaultOpen={true} hasInfo>
         <div className="flex flex-col gap-3">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Database className="w-3 h-3 text-white/20" />
-              <span className="text-[10px] text-white/30 uppercase tracking-tighter">Buffer Stat</span>
-            </div>
-            <span className="text-[10px] font-mono text-white/60">NOMINAL</span>
-          </div>
-          <div className="flex items-center justify-between">
-             <div className="flex items-center gap-2">
-              <ShieldCheck className="w-3 h-3 text-accent-blue" />
-              <span className="text-[10px] text-white/30 uppercase tracking-tighter">Integrity Check</span>
-            </div>
-            <span className="text-[10px] font-mono text-accent-blue">PASSED</span>
-          </div>
+          <MetricRow label="Latency" value="12" unit="ms" valueColor="green" unitColor="green" />
+          <MetricRow label="Quality Index" value="High" valueColor="green" />
         </div>
       </Section>
 
-      {/* Desktop Version Footer */}
-      <div className="mt-auto p-4 border-t border-white/5 bg-white/[0.01]">
-         <div className="flex flex-col gap-1">
-            <div className="flex justify-between items-center">
-              <span className="text-[8px] font-black font-mono text-white/20 uppercase tracking-[0.2em]">HWID:</span>
-              <span className="text-[8px] font-mono text-white/40">7722-X9-FF0</span>
-            </div>
-            <div className="flex justify-between items-center">
-              <span className="text-[8px] font-black font-mono text-white/20 uppercase tracking-[0.2em]">Build:</span>
-              <span className="text-[8px] font-mono text-white/40">2026.05.10-PRO</span>
-            </div>
-         </div>
-      </div>
     </aside>
   );
 };
 
-const Section: React.FC<{ title: string; children: React.ReactNode; defaultOpen?: boolean }> = ({ title, children, defaultOpen = true }) => {
+interface SectionProps {
+  title: string;
+  children: React.ReactNode;
+  defaultOpen?: boolean;
+  hasHide?: boolean;
+  hasInfo?: boolean;
+}
+
+const Section: React.FC<SectionProps> = ({ title, children, defaultOpen = true, hasHide, hasInfo }) => {
   const [isOpen, setIsOpen] = useState(defaultOpen);
 
   return (
     <div className="flex flex-col border-b border-white/5 p-4 transition-all">
-      <button 
-        onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center justify-between mb-4 group"
-      >
-        <span className="text-[9px] font-black uppercase tracking-[0.25em] text-white/30 group-hover:text-accent-green transition-colors">{title}</span>
-        <ChevronUp className={`w-3.5 h-3.5 text-white/10 transition-transform ${isOpen ? '' : 'rotate-180'}`} />
-      </button>
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center gap-2">
+          <span className="text-[11px] font-bold text-white uppercase tracking-wide">{title}</span>
+          {hasInfo && <Info className="w-3.5 h-3.5 text-white/40" />}
+        </div>
+        <button 
+          onClick={() => setIsOpen(!isOpen)}
+          className="flex items-center gap-2 group"
+        >
+          {hasHide && <span className="text-[11px] text-[#00c2ff]">Hide</span>}
+          <ChevronUp className={`w-4 h-4 text-white transition-transform ${isOpen ? '' : 'rotate-180'}`} />
+        </button>
+      </div>
 
       <AnimatePresence initial={false}>
         {isOpen && (
@@ -115,26 +104,55 @@ const Section: React.FC<{ title: string; children: React.ReactNode; defaultOpen?
   );
 };
 
-const MetricRow: React.FC<{ label: string; value: string | number; unit?: string; color?: string }> = ({ label, value, unit, color }) => {
-  const getColor = () => {
+interface MetricRowProps {
+  label: string;
+  value: string | number;
+  secondValue?: string | number;
+  unit?: string;
+  valueColor?: string;
+  secondValueColor?: string;
+  unitColor?: string;
+  hasPencil?: boolean;
+}
+
+const MetricRow: React.FC<MetricRowProps> = ({ 
+  label, value, secondValue, unit, 
+  valueColor = 'white', secondValueColor = 'white', unitColor = 'white/40',
+  hasPencil
+}) => {
+  const getColor = (color: string) => {
     switch (color) {
-        case 'blue': return 'text-[#00c2ff]';
-        case 'yellow': return 'text-accent-yellow';
-        case 'green': return 'text-accent-green';
-        default: return 'text-white/80';
+      case 'blue': return 'text-[#00c2ff]';
+      case 'yellow': return 'text-[#FDB913]';
+      case 'green': return 'text-[#00FF88]';
+      case 'white': return 'text-white';
+      case 'white/40': return 'text-white/40';
+      default: return `text-[${color}]`;
     }
   };
 
   return (
-    <div className="flex items-center justify-between group cursor-default">
-      <span className="text-[10px] font-bold text-white/30 uppercase tracking-tight group-hover:text-white/50 transition-colors">
+    <div className="flex items-center justify-between group cursor-default h-[20px]">
+      <span className="text-[11px] font-medium text-[#A0A5AA] hover:text-white/80 transition-colors">
         {label}
       </span>
       <div className="flex items-baseline gap-1.5 font-mono">
-        <span className={`text-[13px] font-bold ${getColor()}`}>
+        <span className={`text-[13px] font-bold ${getColor(valueColor)}`}>
           {value}
         </span>
-        {unit && <span className="text-[8px] text-white/20 font-black tracking-tighter">{unit}</span>}
+        {secondValue && (
+          <span className={`text-[13px] font-bold ${getColor(secondValueColor)}`}>
+            {secondValue}
+          </span>
+        )}
+        {unit && (
+          <span className={`text-[10px] ${getColor(unitColor)} font-medium`}>
+            {unit}
+          </span>
+        )}
+        {hasPencil && (
+          <Pencil className="w-3 h-3 text-white/40 ml-1 hover:text-white/80 cursor-pointer" />
+        )}
       </div>
     </div>
   );

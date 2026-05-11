@@ -24,38 +24,6 @@ const BottomDrawer: React.FC = () => {
 
       <Panel title="OCT B-SCAN" subTitle="Scan 05 / 24">
         <div className="flex flex-col gap-2 h-full">
-          <div className="relative w-full h-[100px] bg-[#050607] rounded-[4px] border border-white/5 flex items-center justify-center overflow-hidden">
-             <div className="absolute inset-0 pointer-events-none bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.1)_50%)] bg-[length:100%_4px]" />
-             <svg className="w-full h-full" viewBox="0 0 100 40">
-                <path 
-                  d="M 5 35 Q 50 0 95 35" 
-                  fill="none" 
-                  stroke="#00FF88" 
-                  strokeWidth="0.4" 
-                  className="opacity-40"
-                />
-                <path 
-                  d="M 5 38 Q 50 3 95 38" 
-                  fill="none" 
-                  stroke="#00FF88" 
-                  strokeWidth="0.2" 
-                  className="opacity-20"
-                />
-                <circle cx="50" cy="18" r="1" fill="#00FF88" className="animate-pulse shadow-[0_0_8px_#00FF88]" />
-             </svg>
-          </div>
-          <div className="flex gap-1 h-[24px] items-center">
-            <button className="p-0.5 hover:bg-white/5 rounded text-white/20 transition-colors"><ChevronLeft className="w-3 h-3" /></button>
-            {Array.from({ length: 12 }).map((_, i) => (
-              <div 
-                key={i} 
-                className={`flex-1 h-[18px] bg-[#010202] border rounded-[2px] transition-all hover:border-white/20 ${i === 4 ? 'border-accent-green/60 bg-accent-green/5' : 'border-white/5'}`} 
-              >
-                 {i === 4 && <div className="w-full h-full flex items-center justify-center text-accent-green text-[8px] font-black italic">!</div>}
-              </div>
-            ))}
-            <button className="p-0.5 hover:bg-white/5 rounded text-white/20 transition-colors"><ChevronRight className="w-3 h-3" /></button>
-          </div>
         </div>
       </Panel>
 
